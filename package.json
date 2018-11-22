@@ -1,0 +1,24 @@
+{
+  "name": "starchain",
+  "version": "1.0.0",
+  "description": "Blockchain nanodegree project 4",
+  "main": "index.js",
+  "license": "MIT",
+  "dependencies": {
+    "bitcoinjs-lib": "^4.0.2",
+    "bitcoinjs-message": "^2.0.0",
+    "body-parser": "^1.18.3",
+    "crypto-js": "^3.1.9-1",
+    "express": "^4.16.4",
+    "helmet": "^3.15.0",
+    "hex2ascii": "^0.0.3",
+    "level": "^4.0.0"
+  },
+  "devDependencies": {
+    "babel-eslint": "^10.0.1",
+    "eslint": "^5.9.0",
+    "eslint-config-prettier": "^3.3.0",
+    "eslint-plugin-prettier": "^3.0.0",
+    "prettier": "^1.15.2"
+  }
+}

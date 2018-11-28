@@ -1,14 +1,4 @@
 {
-  "parser": "babel-eslint",
-  "parserOptions": {
-    "sourceType": "module"
-  },
-  "env": {
-    "browser": true,
-    "jest": true,
-    "commonjs": true,
-    "es6": true,
-    "node": true
-  },
-  "extends": ["eslint:recommended", "plugin:prettier/recommended"]
+  "extends": "standard",
+  "parser": "babel-eslint"
 }

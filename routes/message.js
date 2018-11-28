@@ -1,31 +1,36 @@
-const express = require("express");
-const router = express("router");
-const pool = require("../mempool");
+const express = require('express')
+const router = express('router')
 
-const MemPool = new pool.MemPool();
+const pool = require('../mempool')
 
-router.get("/list", (req, res) => {
-  res.json(MemPool.listPool());
-});
+const MemPool = new pool.MemPool()
 
-router.post("/requestValidation", (req, res) => {
-  const { address } = req.body;
+router.get('/listRequests', (req, res) => {
+  res.json(MemPool.listPool())
+})
+
+router.get('/listValidRequests', (req, res) => {
+  res.json(MemPool.listPoolValid())
+})
+
+router.post('/requestValidation', (req, res) => {
+  const { address } = req.body
   if (address) {
-    const reqObj = MemPool.addRequestValidation(address);
-    res.send(reqObj);
+    const reqObj = MemPool.addRequestValidation(address)
+    res.send(reqObj)
   } else {
-    res.status(400).json({ error: "invalid request validation body" });
+    res.status(400).json({ error: 'invalid request validation body' })
   }
-});
+})
 
-router.post("/validate", (req, res) => {
-  const { address, signature } = req.body;
+router.post('/validate', (req, res) => {
+  const { address, signature } = req.body
   if (address && signature) {
-    const reqObj = MemPool.addRequestValidation(address);
-    res.send(reqObj);
+    const result = MemPool.validateRequestByWallet(address, signature)
+    res.send(result)
   } else {
-    res.status(400).json({ error: "invalid block body" });
+    res.status(400).json({ error: 'invalid validation body' })
   }
-});
+})
 
-module.exports = router;
+module.exports = router

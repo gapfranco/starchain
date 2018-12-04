@@ -66,7 +66,7 @@ class MemPool {
       return { registerStar: false, error: 'message failed verification' }
     }
     // remove timeout
-    delete this.timedOutRequests(address)
+    delete this.timedOutRequests[address]
     // add to valid requests
     const validRequest = {
       registerStar: true,
@@ -81,6 +81,15 @@ class MemPool {
     this.memPoolValid.push(validRequest)
     this.removeRequestValidation(address)
     return validRequest
+  }
+
+  verifyAddressRequest (address) {
+    return this.memPoolValid.find(req => req.registerStar && req.status.address === address)
+  }
+
+  deleteAddressRequest (request) {
+    this.memPoolValid = this.memPoolValid.filter(req => req.status.address !== request.status.address &&
+      req.status.messageSignature !== request.status.messageSignature)
   }
 }
 

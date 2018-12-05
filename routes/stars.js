@@ -39,7 +39,7 @@ router.post('/message-signature/validate', (req, res) => {
 
 router.post('/block', (req, res) => {
   const { address, star } = req.body
-  if (address && star) {
+  if (address && star && star.dec && star.ra && star.story && star.story.length <= 500) {
     const item = MemPool.verifyAddressRequest(address)
     if (item) {
       let body = {
@@ -47,7 +47,7 @@ router.post('/block', (req, res) => {
         star: { ...star, story: Buffer.from(star.story || '').toString('hex') }
       }
       bc.addNewBlock(new chain.Block(body))
-        .then(resp => res.send(resp))
+        .then(resp => res.json(JSON.parse(resp)))
         .then(() => MemPool.deleteAddressRequest(item))
         .catch(err => res.status(400).json({ error: err }))
     } else {
@@ -81,7 +81,9 @@ router.get('/stars/hash::id', async (req, res) => {
 router.get('/block/:id', async (req, res) => {
   bc.getBlock(req.params.id)
     .then(data => {
-      data.body.star.story = hex2ascii(data.body.star.story)
+      if (data.height > 0) {
+        data.body.star.storyDecoded = hex2ascii(data.body.star.story)
+      }
       res.json(data)
     })
     .catch(() => res.status(404).json({ error: 'block not found' }))

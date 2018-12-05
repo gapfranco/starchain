@@ -204,7 +204,7 @@ class Blockchain {
         .on('data', ({ value }) => {
           blk = JSON.parse(value)
           if (blk.body.address === address) {
-            blk.body.star.story = hex2ascii(blk.body.star.story)
+            blk.body.star.storyDecoded = hex2ascii(blk.body.star.story)
             list.push(blk)
           }
         })
@@ -230,7 +230,7 @@ class Blockchain {
           blk = JSON.parse(value)
           if (blk.hash === hash) {
             blkOut = blk
-            blkOut.body.star.story = hex2ascii(blkOut.body.star.story)
+            blkOut.body.star.storyDecoded = hex2ascii(blkOut.body.star.story)
             stream.destroy()
           }
         })

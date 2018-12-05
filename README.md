@@ -2,13 +2,13 @@
 
 This project implements a simple web service for creating and retrieving blocks in a blockchain using a REST API.
 
-The blocks contains star coordinates and related data.
+The blocks contain star coordinates and related data.
 
 ## Getting Started
 
 These instructions will get you a copy of the project up and running on your local machine for development and testing purposes.
 
-Starr are represented with the followind notation:
+Stars are represented with the notation:
 
 ```
 RA 13h 03m 33.35sec, Dec -49° 31’ 38.1” Mag 4.83 Cen
@@ -19,7 +19,7 @@ where:
 - RA - Right Ascension
 - DEC - Declination
 - MAG - Magnitude
-- CEN - Centaurus
+- CEN - Centaurus (name of star)
 
 ### Dependencies
 
@@ -41,18 +41,49 @@ Change to the project folder and call the entry point:
 node index.js
 ```
 
-It listens on port 8000 by default.
-
-### API endpoints
+Listens on port 8000 by default.
 
 With the server running, use a tool like _CURL_, _Insomnia_ or _Postman_ to access the endpoints:
 
-To store star data un the blockchan, first we must submit a validation request using
-a wallet address.
+### API endpoints
+
+- **POST localhost:8000/requestValidation**
+  Submit a new validation request to the memory pool
+
+- **POST localhost:8000/message-signature/validate**
+  Send a a validation request
+
+- **POST localhost:8000/block**
+  Send star data to be stored
+
+- **GET localhost:8000/block/[height]**
+  Send star data by height
+
+- **GET localhost:8000/stars/hash:[hashcode]**
+  Get block by hashcodo
+
+- **GET localhost:8000/stars/address:[address]**
+  Get list of blocks by wallet address
+
+### API helper endpoints
+
+Endpoint for debbuging and validation.
+
+- **GET localhost:8000/listRequests**
+  After submitting a validation request, it is kept in memory pool for 5 minutes.
+  This endpoint lists the requests waiting in the memory pool.
+
+- **GET localhost:8000/listValidRequests**
+  After validating a new request, it is taken off the meory pool and added to the validated memory pool.
+  This endpoint lists the requests in the validated memory pool.
+
+### Usage examples
+
+To store star data in the blockchan, submit a validation request using a wallet address.
 
 **POST localhost:8000/requestValidation**
 
-The wallet address is the payload:
+Payload: wallet address
 
 ```
 {
@@ -61,7 +92,7 @@ The wallet address is the payload:
 ```
 
 The service stores the request in the memory pool with a 5 minutes expiration time.
-It returns a JSON object containing a message to sign, the timestamp and the validation window:
+Returns a JSON object containing a message to sign, the timestamp and the validation window:
 
 ```
 {
@@ -72,14 +103,14 @@ It returns a JSON object containing a message to sign, the timestamp and the val
 }
 ```
 
-If the same entry point is called again before expiration it just returns the new validation window
-and does not crete a new validation request.
+If the same entry point is called again before expiration, it does not crete a new validation request
+but returns the new validation window.
 
-Use the text of the message to get a signature with a wallet and post the signature with the wallet address:
+Use the message to get a signed text with a wallet and post the signature with the wallet address.
 
 **localhost:8000/message-signature/validate**
 
-payload:
+Payload: message signature
 
 ```
 {
@@ -88,7 +119,7 @@ payload:
 }
 ```
 
-If the request expired (after 5min or more), the request will be wied out and the validation will fail:
+If the request expired (after 5min or more), the request will be wiped out and the validation will fail:
 
 ```
 {
@@ -112,15 +143,15 @@ If the request is still valid:
 }
 ```
 
-Can post a star:
+Send a new block with star data
 
 **POST localhost:8000/block**
 
-Payload:
+Payload: star object
 
 ```
 {
-"address": "13hrWT3YoRaEUY92ApcnyRLGSKL9iQYWFK",
+  "address": "13hrWT3YoRaEUY92ApcnyRLGSKL9iQYWFK",
   "star": {
     "dec": "68° 52' 56.9",
     "ra": "16h 29m 1.0s",
@@ -130,7 +161,7 @@ Payload:
 }
 ```
 
-Receiving:
+Returns the block with the star in the body:
 
 ```
 {
@@ -154,7 +185,7 @@ Get a star by hash:
 
 **GET localhost:8000/stars/hash:420b9ab7f773f255a91f99dcec50ada9d7aacb17cc23929dee71519228786ba6**
 
-Returning the block with the star:
+Returns the block with the star:
 
 ```
 {
@@ -174,7 +205,7 @@ Returning the block with the star:
 }
 ```
 
-Get star by address:
+Get a star by wallet address:
 
 **GET localhost:8000/stars/address:13hrWT3YoRaEUY92ApcnyRLGSKL9iQYWFK**
 
@@ -212,7 +243,7 @@ Get star by address:
 ]
 ```
 
-GET star by height:
+Get a star by height:
 
 **GET localhost:8000/block/6**
 
@@ -232,8 +263,6 @@ GET star by height:
   "previousBlockHash": "4c803baf03d4fddf5acbd1495f6f123c5d893a2d38613f64b0758b8e850c0b61"
 }
 ```
-
-### Helper entry points
 
 **GET localhost:8000/listRequests**
 

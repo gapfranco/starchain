@@ -8,19 +8,6 @@ The blocks contain star coordinates and related data.
 
 These instructions will get you a copy of the project up and running on your local machine for development and testing purposes.
 
-Stars are represented with the notation:
-
-```
-RA 13h 03m 33.35sec, Dec -49° 31’ 38.1” Mag 4.83 Cen
-```
-
-where:
-
-- RA - Right Ascension
-- DEC - Declination
-- MAG - Magnitude
-- CEN - Centaurus (name of star)
-
 ### Dependencies
 
 1. Node.js
@@ -44,6 +31,34 @@ node index.js
 Listens on port 8000 by default.
 
 With the server running, use a tool like _CURL_, _Insomnia_ or _Postman_ to access the endpoints:
+
+### Data types
+
+Stars are represented with the notation:
+
+```
+RA 13h 03m 33.35sec, Dec -49° 31’ 38.1” Mag 4.83 Cen
+```
+
+where:
+
+- RA - Right Ascension
+- DEC - Declination
+- MAG - Magnitude
+- CEN - Centaurus (name of star)
+
+Stars are stored in the body of the blockchain in JSON format:
+
+```
+"star": {
+  "dec": "68° 52' 56.9",
+  "ra": "16h 29m 1.0s",
+  "mag": "4.83",
+  "story": "Found star using https://www.google.com/sky/"
+}
+```
+
+Any other fields in the star object will be stored as sent.
 
 ### API endpoints
 
@@ -91,7 +106,7 @@ Payload: wallet address
 }
 ```
 
-The service stores the request in the memory pool with a 5 minutes expiration time.
+The service stores the request in a memory pool with 5 minutes expiration time.
 Returns a JSON object containing a message to sign, the timestamp and the validation window:
 
 ```
@@ -178,6 +193,15 @@ Returns the block with the star in the body:
   },
   "time": "1543950112",
   "previousBlockHash": "a9aefe51e46968cdc388237f1b1b9a167035c97769a906dcc00c16c894a26415"
+}
+```
+
+After including the block with the star, the request is removed and if you try to include another
+with the same validated request an error wil be returned:
+
+```
+{
+  "error": "address request not found"
 }
 ```
 
